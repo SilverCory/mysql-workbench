@@ -1281,8 +1281,15 @@ grt::StringRef SqlEditorForm::do_connect(std::shared_ptr<sql::TunnelConnection> 
       {
         std::string value;
         get_session_variable(_usr_dbc_conn->ref.get(), "version_comment", value);
+        if (strncmp(value.c_str(), "MariaDB", strlen(7)) == 0) {
+              value = "MySQL";
+        }
         _connection_details["dbmsProductName"] = value;
+        
         get_session_variable(_usr_dbc_conn->ref.get(), "version", value);
+        if (strncmp(value.c_str(), "10.1", strlen(4)) == 0) {
+              value = "5.7.1";
+        }
         _connection_details["dbmsProductVersion"] = value;
 
         logInfo("Opened connection '%s' to %s version %s\n", _connection->name().c_str(),
